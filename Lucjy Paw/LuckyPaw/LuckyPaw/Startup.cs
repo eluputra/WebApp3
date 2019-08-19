@@ -14,6 +14,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using LuckyPaw.Models;
 using LuckyPaw.Data;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using LuckyPaw.Helpers;
 
 namespace LuckyPaw
 {
@@ -52,7 +54,7 @@ namespace LuckyPaw
             // services.AddDefaultIdentity<IdentityUser>()
             //  .AddDefaultUI(UIFramework.Bootstrap4).AddEntityFrameworkStores<LuckyPawContext>();
 
-            services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<LuckyPawContext>(); //.AddDefaultTokenProviders();
+            services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<LuckyPawContext>().AddDefaultTokenProviders();
 
             services.Configure<IdentityOptions>(options =>
             {
@@ -73,6 +75,7 @@ namespace LuckyPaw
                 options.User.AllowedUserNameCharacters =
                 "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
                 options.User.RequireUniqueEmail = false;
+                //options.SignIn.RequireConfirmedEmail = true;
             });
 
             services.ConfigureApplicationCookie(options =>
@@ -85,6 +88,9 @@ namespace LuckyPaw
                 options.AccessDeniedPath = "/Identity/Account/AccessDenied";
                 options.SlidingExpiration = true;
             });
+
+            services.AddTransient<IEmailSender, EmailSender>();
+            services.Configure<AuthMessageSenderOptions>(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -117,7 +123,7 @@ namespace LuckyPaw
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
 
-            //CreateUserRoles(services).Wait();
+            CreateUserRoles(services).Wait();
         }
 
         private async Task CreateUserRoles(IServiceProvider serviceProvider)
@@ -154,7 +160,7 @@ namespace LuckyPaw
             //Assign Admin role to the main User here we have given our newly registered 
             //login id for Admin management
             //IdentityUser user = await UserManager.FindByEmailAsync("mathew6verse33@gmail.com");
-           
+            //await UserManager.RemoveFromRoleAsync(user, "Manager");
             //await UserManager.AddToRoleAsync(user, "Admin");
         }
     }
