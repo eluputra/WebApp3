@@ -1,0 +1,78 @@
+﻿@model IEnumerable<LuckyPaw.Models.PricingPuppyModel>
+
+@{
+    ViewData["Title"] = "Index";
+
+    
+    if (TempData["LoggedIn"] == null)
+    {
+        TempData["LoggedIn"] = false;
+        TempData["Role"] = "";
+    }
+}
+
+<h1>Index</h1>
+<!--
+<p>
+    <a asp-action="Create">Create New</a>
+</p>-->
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.PricePuppyID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PricePuppyDesc)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PricePuppy)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PricePuppyImageUrl)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PuppyQty)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.PricePuppyID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PricePuppyDesc)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PricePuppy)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PricePuppyImageUrl)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PuppyQty)
+            </td>
+            <td>
+                <a asp-controller="CartItemModels" asp-action="BuyPuppy" asp-route-id="@item.PricePuppyID">Buy Puppy</a>
+
+                @if (!(bool)TempData["LoggedIn"] || (string)TempData["Role"] == "User")
+                {
+                  <a asp-action="Details" asp-route-id="@item.PricePuppyID">| Details</a>
+                }
+                else if ((bool)TempData["LoggedIn"] && (string)TempData["Role"] == "Manager")
+                {
+                  <a asp-action="Edit" asp-route-id="@item.PricePuppyID">Edit |</a>
+                  <a asp-action="Details" asp-route-id="@item.PricePuppyID">Details</a>
+                }
+                    <!--
+        <a asp-action="Edit" asp-route-id="@item.PricePuppyID">Edit</a> |
+        <a asp-action="Details" asp-route-id="@item.PricePuppyID">Details</a> |
+        <a asp-action="Delete" asp-route-id="@item.PricePuppyID">Delete</a> -->
+                </td>
+        </tr>
+}
+    </tbody>
+</table>

@@ -1,0 +1,72 @@
+﻿@model IEnumerable<LuckyPaw.Models.TrainingServicesPriceModel>
+
+@{
+    ViewData["Title"] = "Index";
+
+    
+    if (TempData["LoggedIn"] == null)
+    {
+        TempData["LoggedIn"] = false;
+        TempData["Role"] = "";
+    }
+}
+
+<h1>Index</h1>
+<!--
+<p>
+    <a asp-action="Create">Create New</a>
+</p>-->
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.TrainingName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PriceTraining)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TrainingDesc)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TrainingQty)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.TrainingName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PriceTraining)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TrainingDesc)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TrainingQty)
+            </td>
+            <td>
+                <a asp-controller="CartItemModels" asp-action="BuyTrainingService" asp-route-id="@item.TrainingServicesPriceID">Buy Training Service</a>
+
+                @if (!(bool)TempData["LoggedIn"] || (string)TempData["Role"] == "User")
+                {
+                  <a asp-action="Details" asp-route-id="@item.TrainingServicesPriceID">| Details</a>
+                }
+                else if ((bool)TempData["LoggedIn"] && (string)TempData["Role"] == "Manager")
+                {
+                   <a asp-action="Edit" asp-route-id="@item.TrainingServicesPriceID">Edit |</a>
+                   <a asp-action="Details" asp-route-id="@item.TrainingServicesPriceID">Details</a>
+                }
+                    <!--
+        <a asp-action="Edit" asp-route-id="@item.TrainingServicesPriceID">Edit</a> |
+        <a asp-action="Details" asp-route-id="@item.TrainingServicesPriceID">Details</a> |
+        <a asp-action="Delete" asp-route-id="@item.TrainingServicesPriceID">Delete</a> -->
+                </td>
+        </tr>
+}
+    </tbody>
+</table>
