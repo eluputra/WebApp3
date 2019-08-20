@@ -9,6 +9,8 @@ using Microsoft.EntityFrameworkCore;
 using LuckyPaw.Data;
 using LuckyPaw.Models;
 using LuckyPaw.Helpers;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace LuckyPaw.Controllers
 {
@@ -32,19 +34,29 @@ namespace LuckyPaw.Controllers
 
             if(puppyCart != null && trainingServicesCart != null)
                 puppyCart.AddRange(trainingServicesCart);
-            //ViewBag.cart = cart;
-            //ViewBag.total = cart.Sum(item => item.Product.Price * item.Quantity);
-
-            //return View(await _context.CartItemModel.ToListAsync());
-            if(puppyCart != null)
-             return View(puppyCart);
+            
+            if (puppyCart != null)
+                return View(puppyCart);
+            else if (trainingServicesCart != null)
+                return View(trainingServicesCart);
             else
-             return View(trainingServicesCart);
+            {
+                List<CartItemModel> tempCartList = new List<CartItemModel>();
+                CartItemModel tempCart = new CartItemModel { PricePuppyID = 0, PricePuppyDesc = "", PricePuppy = 0, TrainingServicesPriceID = 0,
+                    TrainingName = "", PriceTraining = 0, CartQty = 0, Email = "" };
+
+                tempCartList.Add(tempCart);
+
+                return View(tempCartList);
+            }
         }
 
         // GET: AddOneToTrainingServicesCart
         public async Task<IActionResult> AddOneToTrainingServicesCart(int? id)
         {
+            // Code below copied from http://learningprogramming.net/net/asp-net-core-mvc/build-shopping-cart-with-session-in-asp-net-core-mvc/
+            // and updated it.
+
             List<CartItemModel> cart = SessionHelper.GetObjectFromJson<List<CartItemModel>>(HttpContext.Session, "trainingServicesCart");
             int index = isExistTrainingService((int)id);
 
@@ -81,36 +93,57 @@ namespace LuckyPaw.Controllers
             return RedirectToAction("Index");
         }
 
-        // GET: AddOneToTrainingServicesCart
+        // GET: RemoveOneFromTrainingServicesCart
         public async Task<IActionResult> RemoveOneFromTrainingServicesCart(int? id)
         {
+            // Code below copied from http://learningprogramming.net/net/asp-net-core-mvc/build-shopping-cart-with-session-in-asp-net-core-mvc/
+            // and updated it.
+
             List<CartItemModel> cart = SessionHelper.GetObjectFromJson<List<CartItemModel>>(HttpContext.Session, "trainingServicesCart");
             int index = isExistTrainingService((int)id);
 
             if (index != -1)
             {
-                cart[index].CartQty--;
-
-                var cartItemModel = await _context.CartItemModel
-                .FirstOrDefaultAsync(m => m.TrainingServicesPriceID == id);
-
-                if (cartItemModel == null)
+                if (cart[index].CartQty == 1)
                 {
-                    return NotFound();
-                }
+                    cart.RemoveAt(index);
 
-                cartItemModel.CartQty--;
+                    var cartItemModel = await _context.CartItemModel
+                    .FirstOrDefaultAsync(m => m.TrainingServicesPriceID == id);
 
-                if (ModelState.IsValid)
-                {
-                    try
+                    if (cartItemModel == null)
                     {
-                        _context.Update(cartItemModel);
-                        await _context.SaveChangesAsync();
+                        return NotFound();
                     }
-                    catch (DbUpdateConcurrencyException)
+
+                    _context.CartItemModel.Remove(cartItemModel);
+                    await _context.SaveChangesAsync();
+                }
+                else
+                {
+                    cart[index].CartQty--;
+
+                    var cartItemModel = await _context.CartItemModel
+                    .FirstOrDefaultAsync(m => m.TrainingServicesPriceID == id);
+
+                    if (cartItemModel == null)
                     {
-                        throw;
+                        return NotFound();
+                    }
+
+                    cartItemModel.CartQty--;
+
+                    if (ModelState.IsValid)
+                    {
+                        try
+                        {
+                            _context.Update(cartItemModel);
+                            await _context.SaveChangesAsync();
+                        }
+                        catch (DbUpdateConcurrencyException)
+                        {
+                            throw;
+                        }
                     }
                 }
             }
@@ -120,7 +153,8 @@ namespace LuckyPaw.Controllers
             return RedirectToAction("Index");
         }
 
-        // GET: BuyPuppy
+        // GET: BuyPuppy, Authorize code from https://www.red-gate.com/simple-talk/dotnet/asp-net/thoughts-on-asp-net-mvc-authorization-and-security/
+        [Authorize]
         public async Task<IActionResult> BuyPuppy(int? id)
         {
             if (id == null)
@@ -144,7 +178,7 @@ namespace LuckyPaw.Controllers
                 List<CartItemModel> cart = new List<CartItemModel>();
                 CartItemModel newCartItem = new CartItemModel { PricePuppyID = pricingPuppyModel.PricePuppyID, PricePuppyDesc = pricingPuppyModel.PricePuppyDesc,
                     PricePuppy = pricingPuppyModel.PricePuppy, TrainingServicesPriceID = -1,
-                    TrainingName = "", PriceTraining = 0, CartQty = 1 };
+                    TrainingName = "", PriceTraining = 0, CartQty = 1, Email = User.Identity.Name };
 
                 cart.Add(newCartItem);
 
@@ -164,7 +198,8 @@ namespace LuckyPaw.Controllers
                 if (index == -1)
                 {
                     CartItemModel newCartItm = new CartItemModel { PricePuppyID = pricingPuppyModel.PricePuppyID, PricePuppyDesc = pricingPuppyModel.PricePuppyDesc,
-                                               PricePuppy = pricingPuppyModel.PricePuppy, TrainingServicesPriceID = -1, TrainingName = "", PriceTraining = 0, CartQty = 1};
+                                               PricePuppy = pricingPuppyModel.PricePuppy, TrainingServicesPriceID = -1, TrainingName = "", PriceTraining = 0, CartQty = 1,
+                                               Email = User.Identity.Name };
                     cart.Add(newCartItm);
 
                     if (ModelState.IsValid)
@@ -185,8 +220,9 @@ namespace LuckyPaw.Controllers
             return RedirectToAction("Index");
         }
 
-        
-        // GET: BuyTrainingService
+
+        // GET: BuyTrainingService, Authorize code from https://www.red-gate.com/simple-talk/dotnet/asp-net/thoughts-on-asp-net-mvc-authorization-and-security/
+        [Authorize]
         public async Task<IActionResult> BuyTrainingService(int? id)
         {
             
@@ -213,7 +249,7 @@ namespace LuckyPaw.Controllers
 
                 CartItemModel newCartItem = new CartItemModel { PricePuppyID = -1, PricePuppyDesc = "", PricePuppy = 0,
                                              TrainingServicesPriceID = trainingServicesPriceModel.TrainingServicesPriceID, TrainingName = trainingServicesPriceModel.TrainingName,
-                                             PriceTraining = trainingServicesPriceModel.PriceTraining, CartQty = 1 };
+                                             PriceTraining = trainingServicesPriceModel.PriceTraining, CartQty = 1, Email = User.Identity.Name };
 
                 cart.Add(newCartItem);
 
@@ -260,7 +296,7 @@ namespace LuckyPaw.Controllers
                 {
                     CartItemModel newCartItm = new CartItemModel {PricePuppyID = -1, PricePuppyDesc = "", PricePuppy = 0,
                                                TrainingServicesPriceID = trainingServicesPriceModel.TrainingServicesPriceID, TrainingName = trainingServicesPriceModel.TrainingName,
-                                               PriceTraining = trainingServicesPriceModel.PriceTraining, CartQty = 1 };
+                                               PriceTraining = trainingServicesPriceModel.PriceTraining, CartQty = 1, Email = User.Identity.Name };
 
                     cart.Add(newCartItm);
 
@@ -279,7 +315,7 @@ namespace LuckyPaw.Controllers
         }
         
 
-        /*
+        
         // GET: Remove puppy
         public async Task<IActionResult> RemovePuppy(int? id)
         {
@@ -288,25 +324,31 @@ namespace LuckyPaw.Controllers
                 return NotFound();
             }
 
-            List<CartItemModel> cart = SessionHelper.GetObjectFromJson<List<CartItemModel>>(HttpContext.Session, "cart");
-            int index = isExist(id);
-            cart.RemoveAt(index);
-            SessionHelper.SetObjectAsJson(HttpContext.Session, "cart", cart);
-            return RedirectToAction("Index");
+            List<CartItemModel> cart = SessionHelper.GetObjectFromJson<List<CartItemModel>>(HttpContext.Session, "puppyCart");
+            int index = isExistPuppy((int)id);
 
-            
-            var cartItemModel = await _context.CartItemModel
-                .FirstOrDefaultAsync(m => m.CartId == id);
-            if (cartItemModel == null)
+            if (index != -1)
             {
-                return NotFound();
+                cart.RemoveAt(index);
+
+                var cartItemModel = await _context.CartItemModel
+                    .FirstOrDefaultAsync(m => m.PricePuppyID == id);
+
+                if (cartItemModel == null)
+                {
+                    return NotFound();
+                }
+
+                _context.CartItemModel.Remove(cartItemModel);
+                await _context.SaveChangesAsync();
             }
 
-            return View(cartItemModel); 
+            SessionHelper.SetObjectAsJson(HttpContext.Session, "puppyCart", cart);
+           
+            return RedirectToAction("Index");
         }
-        */
+        
 
-         /*
         // GET: Remove training service
         public async Task<IActionResult> RemoveTrainingService(int? id)
         {
@@ -315,26 +357,85 @@ namespace LuckyPaw.Controllers
                 return NotFound();
             }
 
-            List<CartItemModel> cart = SessionHelper.GetObjectFromJson<List<CartItemModel>>(HttpContext.Session, "cart");
-            int index = isExist(id);
-            cart.RemoveAt(index);
-            SessionHelper.SetObjectAsJson(HttpContext.Session, "cart", cart);
-            return RedirectToAction("Index");
+            List<CartItemModel> cart = SessionHelper.GetObjectFromJson<List<CartItemModel>>(HttpContext.Session, "trainingServicesCart");
+            int index = isExistTrainingService((int)id);
 
-            
-            var cartItemModel = await _context.CartItemModel
-                .FirstOrDefaultAsync(m => m.CartId == id);
-            if (cartItemModel == null)
+            if (index != -1)
             {
-                return NotFound();
+                cart.RemoveAt(index);
+
+                var cartItemModel = await _context.CartItemModel
+                   .FirstOrDefaultAsync(m => m.TrainingServicesPriceID == id);
+
+                if (cartItemModel == null)
+                {
+                    return NotFound();
+                }
+
+                _context.CartItemModel.Remove(cartItemModel);
+                await _context.SaveChangesAsync();
             }
 
-            return View(cartItemModel);
-        }
-         */
+            SessionHelper.SetObjectAsJson(HttpContext.Session, "trainingServicesCart", cart);
 
-        // GET: CartItemModels/Details/5
-        public async Task<IActionResult> Details(int? id)
+            return RedirectToAction("Index");
+        }
+
+        public async Task<IActionResult> CheckOut()
+        {
+            List<CartItemModel> puppyCart = SessionHelper.GetObjectFromJson<List<CartItemModel>>(HttpContext.Session, "puppyCart");
+            List<CartItemModel> trainingServicesCart = SessionHelper.GetObjectFromJson<List<CartItemModel>>(HttpContext.Session, "trainingServicesCart");
+
+            if (puppyCart != null && trainingServicesCart != null)
+                puppyCart.AddRange(trainingServicesCart);
+
+            double puppyTotal = 0;
+            double traingServicesTotal = 0;
+
+            if (puppyCart != null)
+            {
+
+                for (int i = 0; i < puppyCart.Count; i++)
+                {
+                    if (puppyCart[i].TrainingServicesPriceID == -1)
+                    {
+                        puppyTotal += puppyCart[i].PricePuppy;
+                    }
+                    else if (puppyCart[i].PricePuppyID == -1)
+                    {
+                        traingServicesTotal = puppyCart[i].PriceTraining * puppyCart[i].CartQty;
+                    }
+                }
+
+                ViewData["puppyTotal"] = puppyTotal;
+                ViewData["traingServicesTotal"] = traingServicesTotal;
+
+                return View(puppyCart);
+            }
+            else if (trainingServicesCart != null) {
+
+                for (int i = 0; i < trainingServicesCart.Count; i++)
+                {
+                    if (trainingServicesCart[i].PricePuppyID == -1)
+                    {
+                        traingServicesTotal = trainingServicesCart[i].PriceTraining * trainingServicesCart[i].CartQty;
+                    }
+                }
+
+                ViewData["puppyTotal"] = puppyTotal;
+                ViewData["traingServicesTotal"] = traingServicesTotal;
+
+                return View(trainingServicesCart);
+            }
+
+            ViewData["puppyTotal"] = puppyTotal;
+            ViewData["traingServicesTotal"] = traingServicesTotal;
+
+            return View();
+        }
+
+            // GET: CartItemModels/Details/5
+            public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
@@ -362,7 +463,7 @@ namespace LuckyPaw.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CartId,PricePuppyID,PricePuppyDesc,PricePuppy,TrainingServicesPriceID,TrainingName,PriceTraining,CartQty")] CartItemModel cartItemModel)
+        public async Task<IActionResult> Create([Bind("CartId,PricePuppyID,PricePuppyDesc,PricePuppy,TrainingServicesPriceID,TrainingName,PriceTraining,CartQty,Email")] CartItemModel cartItemModel)
         {
             if (ModelState.IsValid)
             {
@@ -394,7 +495,7 @@ namespace LuckyPaw.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("CartId,PricePuppyID,PricePuppyDesc,PricePuppy,TrainingServicesPriceID,TrainingName,PriceTraining,CartQty")] CartItemModel cartItemModel)
+        public async Task<IActionResult> Edit(int id, [Bind("CartId,PricePuppyID,PricePuppyDesc,PricePuppy,TrainingServicesPriceID,TrainingName,PriceTraining,CartQty,Email")] CartItemModel cartItemModel)
         {
             if (id != cartItemModel.CartId)
             {

@@ -25,5 +25,7 @@ namespace LuckyPaw.Models
 
         public int CartQty { get; set; }
 
+        public string Email { get; set; }
+
     }
 }

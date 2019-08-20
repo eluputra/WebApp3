@@ -43,22 +43,16 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="ContactUs">Contact Us</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark btn btn-info btnShoppingCart" asp-area="" asp-controller="CartItemModels" asp-action="Index">Shopping Cart</a>
+                        </li>
+                        <li class="nav-item">
+                            <partial name="_LoginPartial" />
+                        </li>
                         <!--
     <li class="nav-item">
         <a class="nav-link text-dark btn btn-info btnRegister" asp-area="" asp-controller="RegistrationModels" asp-action="Register">Register</a>
     </li>-->
-                        <li class="nav-item">
-                            <partial name="_LoginPartial" />
-                            <!--
-        @if (true)
-        {
-            <a class="nav-link text-dark btn btn-info btnLogin" asp-area="" asp-controller="LoginModels" asp-action="LoginOut">Login Out</a>
-        }
-        else
-        {
-            <a class="nav-link text-dark btn btn-info btnLogin" asp-area="" asp-controller="LoginModels" asp-action="Login">Login</a>
-        }-->
-                        </li>
                     </ul>
                 </div>
             </div>

@@ -65,15 +65,42 @@ body {
 .btnLogin {
     color: white !Important;
     position: relative;
-    left: 419px;
+    left: 410px;
 }
 
 .btnRegister {
     color: white !Important;
     position: relative;
-    left: 410px;
+    left: 400px;
 }
 
-.nav-link.text-dark.btn.btn-info.btnLogin:hover, .nav-link.text-dark.btn.btn-info.btnRegister:hover {
+.btnShoppingCart {
+    color: white !Important;
+    position: relative;
+    left: 390px;
+}
+
+.nav-link.text-dark.btn.btn-info.btnLogin:hover, .nav-link.text-dark.btn.btn-info.btnRegister:hover,
+.nav-link.text-dark.btn.btn-info.btnShoppingCart:hover {
     color: greenyellow !Important
+}
+
+.displayNone {
+    display:none
+}
+
+.btnManage {
+    position: relative;
+    left: -70px;
+    width: 140%;
+}
+
+.btnLogOut {
+    position: relative;
+    left: 0px
+}
+
+nav {
+    position: relative;
+    left: -180px
 }
