@@ -4,11 +4,14 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace LuckyPaw.Models
 {
+    // Cart Item Model to store bought puppies or trianing service
     public class CartItemModel
     {
+        // Primary Key
         [Key]
         public int CartId { get; set; }
 
+        // Foreign Key from pricing puppy model
         [ForeignKey("PricingPuppyModel")]
         public int PricePuppyID { get; set; }
 
@@ -16,6 +19,7 @@ namespace LuckyPaw.Models
 
         public double PricePuppy { get; set; }
 
+        // Foreign key from training services price model
         [ForeignKey("TrainingServicesPriceModel")]
         public int TrainingServicesPriceID { get; set; }
 

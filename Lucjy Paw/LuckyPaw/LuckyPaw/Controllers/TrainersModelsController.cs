@@ -41,6 +41,22 @@ namespace LuckyPaw.Controllers
 
                 // Set the updated trainer to the updatedTrainersModel
                 updatedTrainersModel[i] = trainer;
+
+                if (ModelState.IsValid)
+                {
+                    try
+                    {
+                        _context.Update(trainer);
+                        await _context.SaveChangesAsync();
+                    }
+                    catch (DbUpdateConcurrencyException)
+                    {
+                       
+                        throw;
+                       
+                    }
+                }
+
                 i++;
             }
 
@@ -76,7 +92,7 @@ namespace LuckyPaw.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("TrainerId,TrainerName,TrainerArea,DogNumber,DogName")] TrainersModel trainersModel)
+        public async Task<IActionResult> Create([Bind("TrainerId,TrainerName,TrainerArea,DogNumber")] TrainersModel trainersModel)
         {
             if (ModelState.IsValid)
             {
@@ -108,7 +124,7 @@ namespace LuckyPaw.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("TrainerId,TrainerName,TrainerArea,DogNumber,DogName")] TrainersModel trainersModel)
+        public async Task<IActionResult> Edit(string id, [Bind("TrainerId,TrainerName,TrainerArea,DogNumber")] TrainersModel trainersModel)
         {
             if (id != trainersModel.TrainerId)
             {

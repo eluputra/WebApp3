@@ -12,6 +12,7 @@ a.navbar-brand {
 html {
   font-size: 14px;
 }
+
 @media (min-width: 768px) {
   html {
     font-size: 16px;
@@ -80,8 +81,13 @@ body {
     left: 390px;
 }
 
+.btnCartItemsView, .btnManageAccounts {
+    color: white !Important;
+}
+
 .nav-link.text-dark.btn.btn-info.btnLogin:hover, .nav-link.text-dark.btn.btn-info.btnRegister:hover,
-.nav-link.text-dark.btn.btn-info.btnShoppingCart:hover {
+.nav-link.text-dark.btn.btn-info.btnShoppingCart:hover, .nav-link.text-dark.btn.btn-info.btnCartItemsView:hover,
+.nav-link.text-dark.btn.btn-info.btnManageAccounts:hover {
     color: greenyellow !Important
 }
 

@@ -28,9 +28,6 @@
             <th>
                 @Html.DisplayNameFor(model => model.TrainingDesc)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TrainingQty)
-            </th>
             <th></th>
         </tr>
     </thead>
@@ -45,9 +42,6 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.TrainingDesc)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TrainingQty)
             </td>
             <td>
                 <a asp-controller="CartItemModels" asp-action="BuyTrainingService" asp-route-id="@item.TrainingServicesPriceID">Buy Training Service</a>

@@ -54,7 +54,7 @@ namespace LuckyPaw.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("TrainingServicesPriceID,TrainingName,PriceTraining,TrainingDesc,TrainingQty")] TrainingServicesPriceModel trainingServicesPriceModel)
+        public async Task<IActionResult> Create([Bind("TrainingServicesPriceID,TrainingName,PriceTraining,TrainingDesc")] TrainingServicesPriceModel trainingServicesPriceModel)
         {
             if (ModelState.IsValid)
             {
@@ -86,7 +86,7 @@ namespace LuckyPaw.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("TrainingServicesPriceID,TrainingName,PriceTraining,TrainingDesc,TrainingQty")] TrainingServicesPriceModel trainingServicesPriceModel)
+        public async Task<IActionResult> Edit(int id, [Bind("TrainingServicesPriceID,TrainingName,PriceTraining,TrainingDesc")] TrainingServicesPriceModel trainingServicesPriceModel)
         {
             if (id != trainingServicesPriceModel.TrainingServicesPriceID)
             {

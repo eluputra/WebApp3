@@ -50,7 +50,8 @@
                 @Html.DisplayFor(modelItem => item.PricePuppy)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.PricePuppyImageUrl)
+                <!--Image code from https://www.w3schools.com/tags/tag_img.asp-->
+                <img src="@item.PricePuppyImageUrl" alt="@item.PricePuppyImageUrl" height="100" width="100">
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.PuppyQty)

@@ -3,8 +3,10 @@ using System.ComponentModel.DataAnnotations;
 
 namespace LuckyPaw.Models
 {
+    // Trainers model to hold information about the dog trainer
     public class TrainersModel
     {
+        // Primary key
         [Key]
         public string TrainerId { get; set; }
 
@@ -14,6 +16,5 @@ namespace LuckyPaw.Models
 
         public int DogNumber { get; set; }
 
-        public string DogName { get; set; }
     }
 }

@@ -107,13 +107,16 @@ namespace LuckyPaw
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-
+            // Detail of the use https://docs.microsoft.com/en-us/aspnet/core/fundamentals/error-handling?view=aspnetcore-2.2
             app.UseStatusCodePages();
+
+            // Use session for the shopping cart
             app.UseSession();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
 
+            // Use authentication for the identity
             app.UseAuthentication();
 
             app.UseMvc(routes =>
@@ -123,11 +126,13 @@ namespace LuckyPaw
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
 
+            // Create user roles
             CreateUserRoles(services).Wait();
         }
 
         private async Task CreateUserRoles(IServiceProvider serviceProvider)
         {
+            // Get role manager and user manager
             var RoleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
             var UserManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
 
@@ -159,9 +164,9 @@ namespace LuckyPaw
 
             //Assign Admin role to the main User here we have given our newly registered 
             //login id for Admin management
-            //IdentityUser user = await UserManager.FindByEmailAsync("mathew6verse33@gmail.com");
-            //await UserManager.RemoveFromRoleAsync(user, "Manager");
-            //await UserManager.AddToRoleAsync(user, "Admin");
+            IdentityUser user = await UserManager.FindByEmailAsync("eluputra@hotmail.com");
+            await UserManager.RemoveFromRoleAsync(user, "User");
+            await UserManager.AddToRoleAsync(user, "Admin");
         }
     }
 }

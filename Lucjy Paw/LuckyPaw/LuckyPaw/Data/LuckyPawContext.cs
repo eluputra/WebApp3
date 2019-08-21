@@ -17,10 +17,6 @@ namespace LuckyPaw.Data
 
         public DbSet<LuckyPaw.Models.TrainingServicesPriceModel> TrainingServicesPriceModel { get; set; }
 
-        public DbSet<LuckyPaw.Models.LoginModel> LoginModel { get; set; }
-
-        public DbSet<LuckyPaw.Models.RegistrationModel> RegistrationModel { get; set; }
-
         public DbSet<LuckyPaw.Models.TrainersModel> TrainersModel { get; set; }
 
         public DbSet<LuckyPaw.Models.CartItemModel> CartItemModel { get; set; }
@@ -49,8 +45,6 @@ namespace LuckyPaw.Data
             modelBuilder.Entity<PricingPuppyModel>().ToTable("PricePuppy");
             modelBuilder.Entity<TrainingDogModel>().ToTable("TrainingDog");
             modelBuilder.Entity<TrainingServicesPriceModel>().ToTable("TrainingServicesPrice");
-            modelBuilder.Entity<LoginModel>().ToTable("Login");
-            modelBuilder.Entity<RegistrationModel>().ToTable("Registration");
             modelBuilder.Entity<TrainersModel>().ToTable("Trainers");
             modelBuilder.Entity<CartItemModel>().ToTable("CartItem");
 

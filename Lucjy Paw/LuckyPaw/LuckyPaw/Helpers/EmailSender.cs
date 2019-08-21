@@ -38,7 +38,7 @@ namespace LuckyPaw.Helpers
                 var credential = new NetworkCredential
                 {
                     UserName = "ejluputra@gmail.com",  // replace with valid value
-                    Password = "kimia123"  // replace with valid value
+                    Password = "zzzzzzz"  // replace with valid value
                 };
                 smtp.Credentials = credential;
                 smtp.Host = "smtp.gmail.com";

@@ -4,8 +4,10 @@ using System.ComponentModel.DataAnnotations;
 
 namespace LuckyPaw.Models
 {
+    // Price puppy model to hold puppy information and price
     public class PricingPuppyModel
     {
+        // Primary key
         [Key]
         public int PricePuppyID { get; set; }
 

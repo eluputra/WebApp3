@@ -2,6 +2,8 @@
 
 @{
     ViewData["Title"] = "Index";
+
+    var count = 0;
 }
 
 <h1>Shopping Cart Items</h1>
@@ -23,8 +25,11 @@
     <tbody>
         @foreach (var item in Model)
         {
+            <!--If and variable code from https://www.w3schools.com/asp/razor_cs_logic.asp-->
+            <!--A puppy has a training services price id of -1, so we check for that and display the puppy information-->
             @if (item.TrainingServicesPriceID == -1)
             {
+                count++;
                 <tr>
                     <td>
                         @Html.DisplayFor(modelItem => item.PricePuppyDesc)
@@ -38,9 +43,9 @@
                     <td>
                         <a asp-action="RemovePuppy" asp-route-id="@item.PricePuppyID">Remove Puppy</a>
                         <!--
-                        <a asp-action="Edit" asp-route-id="@item.CartId">Edit</a> |
-                        <a asp-action="Details" asp-route-id="@item.CartId">Details</a> |
-                        <a asp-action="Delete" asp-route-id="@item.CartId">Delete</a>-->
+                    <a asp-action="Edit" asp-route-id="@item.CartId">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.CartId">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.CartId">Delete</a>-->
                     </td>
                 </tr>
             }
@@ -69,8 +74,11 @@
     <tbody>
         @foreach (var item in Model)
         {
+            <!--If and variable code from https://www.w3schools.com/asp/razor_cs_logic.asp-->
+            <!--A training service has a puppy id of -1, so we check for that and display the training services information-->
             @if (item.PricePuppyID == -1)
             {
+                count++;
                 <tr>
                     <td>
                         @Html.DisplayFor(modelItem => item.TrainingName)
@@ -88,8 +96,8 @@
                     </td>
                     <td>
                         <!--<a asp-action="Edit" asp-route-id="@item.CartId">Edit</a> |
-                        <a asp-action="Details" asp-route-id="@item.CartId">Details</a> |
-                        <a asp-action="Delete" asp-route-id="@item.CartId">Delete</a>-->
+                    <a asp-action="Details" asp-route-id="@item.CartId">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.CartId">Delete</a>-->
                     </td>
                 </tr>
             }
@@ -100,6 +108,8 @@
     <a asp-controller="TrainingServicesPriceModels" asp-action="Index">Continue Shopping for Training Services</a>
 </p>
 
+@if (count > 0) {
 <p>
     <a asp-action="CheckOut">CheckOut</a>
 </p>
+}

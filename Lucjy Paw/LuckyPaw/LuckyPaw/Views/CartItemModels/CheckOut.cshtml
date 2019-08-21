@@ -72,11 +72,14 @@
                     <td>
                         @Html.DisplayFor(modelItem => item.PriceTraining)
                     </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CartQty)
+                    </td>
                 </tr>
             }
         }
     </tbody>
 </table>
 <p>
-    Total Training Services: $ @ViewData["traingServicesTotal"]
+    Total Training Services: $ @ViewData["trainingServicesTotal"]
 </p>

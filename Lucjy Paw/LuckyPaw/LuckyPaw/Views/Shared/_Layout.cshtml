@@ -19,7 +19,7 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark border-bottom box-shadow mb-3">
             <div class="container">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">LuckyPaw</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
@@ -29,19 +29,19 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="TrainersModels" asp-action="Index">Trainers</a>
+                            <a class="nav-link" asp-area="" asp-controller="TrainersModels" asp-action="Index">Trainers</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="TrainingDogModels" asp-action="Index">Trained Dog</a>
+                            <a class="nav-link" asp-area="" asp-controller="TrainingDogModels" asp-action="Index">Trained Dog</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="TrainingServicesPriceModels" asp-action="Index">Training Services Price</a>
+                            <a class="nav-link" asp-area="" asp-controller="TrainingServicesPriceModels" asp-action="Index">Training Services Price</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="PricingPuppyModels" asp-action="Index">Puppy For Sale</a>
+                            <a class="nav-link" asp-area="" asp-controller="PricingPuppyModels" asp-action="Index">Puppy For Sale</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="ContactUs">Contact Us</a>
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="ContactUs">Contact Us</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark btn btn-info btnShoppingCart" asp-area="" asp-controller="CartItemModels" asp-action="Index">Shopping Cart</a>
@@ -49,14 +49,38 @@
                         <li class="nav-item">
                             <partial name="_LoginPartial" />
                         </li>
-                        <!--
-    <li class="nav-item">
-        <a class="nav-link text-dark btn btn-info btnRegister" asp-area="" asp-controller="RegistrationModels" asp-action="Register">Register</a>
-    </li>-->
                     </ul>
                 </div>
             </div>
         </nav>
+        <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+            <table cellpadding="10">
+                <tr>
+                    <td>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                            {
+                                
+                               <a class="nav-link text-dark btn btn-info btnCartItemsView" asp-area="" asp-controller="CartItemModels" asp-action="CartItemsView">Bought Items</a>
+                                    
+                            }
+                        }
+                    </td>
+                    <td>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            if (User.IsInRole("Admin"))
+                            {
+                                
+                              <a class="nav-link text-dark btn btn-info btnManageAccounts" asp-area="" asp-controller="Home" asp-action="ManageAccounts">Accounts</a>
+                                   
+                            }
+                        }
+                    </td>
+                </tr>
+            </table>
+        </div>
     </header>
     <div class="container">
         <partial name="_CookieConsentPartial" />
